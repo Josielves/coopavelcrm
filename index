@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM Industrial Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0e0f;
+      --surface: #141517;
+      --surface2: #1c1e20;
+      --surface3: #242628;
+      --border: #2a2d31;
+      --border2: #333740;
+      --amber: #f59e0b;
+      --amber-dim: #92600a;
+      --amber-glow: rgba(245,158,11,0.12);
+      --red: #ef4444;
+      --red-dim: #7f1d1d;
+      --green: #22c55e;
+      --green-dim: #14532d;
+      --text: #e8eaed;
+      --text-muted: #6b7280;
+      --text-dim: #9ca3af;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --font-cond: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+      --sidebar-w: 280px;
+    }
+
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; overflow: hidden; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 20px;
+      position: relative;
+      z-index: 10;
+    }
+    .topbar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--amber), transparent 60%);
+    }
+    .brand { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
+    .brand h1 {
+      font-family: var(--font-cond);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+    .brand p {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+    .top-actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+    .search-wrap { position: relative; }
+    .search-wrap input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 7px 12px 7px 32px;
+      width: 240px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .search-wrap input:focus { border-color: var(--amber); box-shadow: 0 0 0 2px var(--amber-glow); }
+    .search-wrap input::placeholder { color: var(--text-muted); }
+    .search-icon {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); font-size: 13px; pointer-events: none;
+    }
+    .btn {
+      font-family: var(--font-cond);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      border: none;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-primary { background: var(--amber); color: #0d0e0f; }
+    .btn-primary:hover { background: #fbbf24; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border2);
+    }
+    .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+
+    /* ── LAYOUT ── */
+    .app-layout {
+      display: flex;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      flex-shrink: 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+    .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border); }
+    .sidebar-section h3 {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* mini cards */
+    .dashboard-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .mini-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 10px 8px;
+      text-align: center;
+      display: flex; flex-direction: column; gap: 2px;
+      transition: border-color .2s;
+    }
+    .mini-card strong { font-family: var(--font-cond); font-size: 22px; font-weight: 700; color: var(--text); }
+    .mini-card span { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); letter-spacing: 0.05em; }
+    .mini-card.warning { border-left: 2px solid var(--amber); }
+    .mini-card.warning strong { color: var(--amber); }
+    .mini-card.danger { border-left: 2px solid var(--red); }
+    .mini-card.danger strong { color: var(--red); }
+
+    /* categories */
+    .category-btns { display: flex; flex-direction: column; gap: 2px; }
+    .category-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--font-body);
+      font-size: 13px;
+      text-align: left;
+      padding: 6px 8px;
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: all .15s;
+    }
+    .category-btn:hover { color: var(--text); background: var(--surface2); }
+    .category-btn.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-glow); }
+
+    /* equipment list */
+    .equipment-list { display: flex; flex-direction: column; gap: 4px; }
+    .equipment-item {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text);
+      text-align: left;
+      padding: 10px 12px;
+      cursor: pointer;
+      width: 100%;
+      transition: all .15s;
+    }
+    .equipment-item:hover { background: var(--surface2); border-color: var(--border); }
+    .equipment-item.active { background: var(--surface2); border-color: var(--border2); border-left: 2px solid var(--amber); }
+    .equipment-item strong { display: block; font-family: var(--font-cond); font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .equipment-meta { display: flex; align-items: center; justify-content: space-between; }
+    .equipment-meta span:first-child { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+    /* badges */
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border: 1px solid;
+    }
+    .badge.success { color: var(--green); border-color: var(--green); background: rgba(34,197,94,.08); }
+    .badge.warning { color: var(--amber); border-color: var(--amber); background: var(--amber-glow); }
+    .badge.danger  { color: var(--red); border-color: var(--red); background: rgba(239,68,68,.08); }
+
+    /* ── WORKSPACE ── */
+    .workspace {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+
+    /* equipment header */
+    .equipment-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .equipment-header h2 {
+      font-family: var(--font-cond);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .meta-line {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .meta-line span:not(.badge) {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .meta-line span:not(.badge):not(:last-child)::after {
+      content: '/';
+      margin-left: 12px;
+      color: var(--border2);
+    }
+    .header-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    /* info grid */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--amber-dim), transparent);
+    }
+    .card h3 {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .card p {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 2;
+    }
+    .status-list { display: flex; flex-direction: column; gap: 0; }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .status-row:last-child { border-bottom: none; }
+    .status-row span { font-size: 12px; color: var(--text-muted); }
+    .status-row strong { font-family: var(--font-mono); font-size: 12px; color: var(--text); }
+
+    /* tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      gap: 0;
+    }
+    .tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-cond);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all .15s;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+    /* table */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--surface2); }
+    th {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: left;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background .1s; }
+    tbody tr:hover { background: var(--surface2); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .equipment-header { animation: fadeIn .3s ease both; }
+    .grid { animation: fadeIn .3s .05s ease both; }
+    .table-wrap { animation: fadeIn .3s .1s ease both; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 0; }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <h1>CRM Industrial</h1>
+    <p>// gestão de equipamentos</p>
+  </div>
+  <div class="top-actions">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="search" placeholder="Buscar equipamento..." id="searchInput">
+    </div>
+    <button class="btn btn-ghost">Relatório</button>
+    <button class="btn btn-primary">+ Novo equipamento</button>
+  </div>
+</header>
+
+<main class="app-layout">
+
+  <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <h3>Resumo geral</h3>
+      <div class="dashboard-cards">
+        <div class="mini-card">
+          <strong>18</strong>
+          <span>Total</span>
+        </div>
+        <div class="mini-card warning">
+          <strong>4</strong>
+          <span>Prev.</span>
+        </div>
+        <div class="mini-card danger">
+          <strong>2</strong>
+          <span>Crítico</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Categorias</h3>
+      <div class="category-btns" id="categoryBtns">
+        <button class="category-btn active" data-cat="todos">Todos</button>
+        <button class="category-btn" data-cat="hidraulicos">Hidráulicos</button>
+        <button class="category-btn" data-cat="eletricos">Elétricos</button>
+        <button class="category-btn" data-cat="pneumaticos">Pneumáticos</button>
+        <button class="category-btn" data-cat="mecanicos">Mecânicos</button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Equipamentos</h3>
+      <div class="equipment-list" id="equipmentList">
+
+        <button class="equipment-item active" data-id="0">
+          <strong>Prensa PH-220</strong>
+          <div class="equipment-meta">
+            <span>Atlas Industrial</span>
+            <span class="badge success">Operando</span>
+          </div>
+        </button>
+
+        <button class="equipment-item" data-id="1">
+          <strong>Painel CCM-01</strong>
+          <div class="equipment-meta">
+            <span>WEG</span>
+            <span class="badge warning">Preventiva</span>
+          </div>
+        </button>
+
+        <button class="equipment-item" data-id="2">
+          <strong>Cilindro CX-90</strong>
+          <div class="equipment-meta">
+            <span>Parker</span>
+            <span class="badge danger">Crítico</span>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+  </aside>
+
+  <section class="workspace" id="workspace">
+    <!-- content rendered by JS -->
+  </section>
+
+</main>
+
+<script>
+  const equipments = [
+    {
+      id: 0,
+      name: 'Prensa Hidráulica PH-220',
+      brand: 'Atlas Industrial',
+      model: 'Modelo PH-220X',
+      status: 'success',
+      statusLabel: 'Operando',
+      specs: ['Capacidade: 220 toneladas', 'Tensão: 380V', 'Potência: 15CV', 'Pressão máxima: 250bar'],
+      lastMaint: '14/05/2026',
+      nextMaint: '28/05/2026',
+      criticality: 'Alta',
+      stock: [
+        { part: 'Retentor hidráulico', maker: 'Parker', qty: 2, status: 'warning', statusLabel: 'Baixo estoque' },
+        { part: 'Contator 220V', maker: 'WEG', qty: 12, status: 'success', statusLabel: 'Disponível' },
+        { part: 'Anel de vedação', maker: 'Parker', qty: 0, status: 'danger', statusLabel: 'Sem estoque' },
+      ],
+      preventivas: [
+        { date: '14/05/2026', type: 'Troca de fluido hidráulico', tech: 'Carlos M.', status: 'success', statusLabel: 'Concluída' },
+        { date: '28/05/2026', type: 'Inspeção de retentores', tech: 'Ana R.', status: 'warning', statusLabel: 'Agendada' },
+      ],
+      corretivas: [
+        { date: '02/04/2026', problem: 'Vazamento no cilindro principal', tech: 'Carlos M.', status: 'success', statusLabel: 'Resolvida' },
+      ],
+      historico: [
+        { date: '14/05/2026', event: 'Manutenção preventiva realizada' },
+        { date: '02/04/2026', event: 'Ordem corretiva #OC-0234 aberta' },
+        { date: '15/03/2026', event: 'Inspeção mensal concluída' },
+      ],
+    },
+    {
+      id: 1,
+      name: 'Painel de Controle CCM-01',
+      brand: 'WEG',
+      model: 'Modelo CCM-01S',
+      status: 'warning',
+      statusLabel: 'Preventiva',
+      specs: ['Tensão: 380V trifásico', 'Corrente máx: 630A', 'Proteção: IP54', 'Potência: 75kW'],
+      lastMaint: '01/04/2026',
+      nextMaint: '20/05/2026',
+      criticality: 'Média',
+      stock: [
+        { part: 'Disjuntor 100A', maker: 'WEG', qty: 3, status: 'success', statusLabel: 'Disponível' },
+        { part: 'Relé térmico', maker: 'Schneider', qty: 1, status: 'warning', statusLabel: 'Baixo estoque' },
+      ],
+      preventivas: [
+        { date: '20/05/2026', type: 'Verificação de conexões', tech: 'João P.', status: 'warning', statusLabel: 'Pendente' },
+      ],
+      corretivas: [],
+      historico: [
+        { date: '01/04/2026', event: 'Preventiva realizada' },
+        { date: '10/03/2026', event: 'Firmware atualizado' },
+      ],
+    },
+    {
+      id: 2,
+      name: 'Cilindro Pneumático CX-90',
+      brand: 'Parker',
+      model: 'Modelo CX-90D',
+      status: 'danger',
+      statusLabel: 'Crítico',
+      specs: ['Curso: 900mm', 'Pressão: 10 bar', 'Diâmetro: 80mm', 'Temperatura: -20°C a 80°C'],
+      lastMaint: '10/03/2026',
+      nextMaint: '—',
+      criticality: 'Crítica',
+      stock: [
+        { part: 'Kit de vedação', maker: 'Parker', qty: 0, status: 'danger', statusLabel: 'Sem estoque' },
+      ],
+      preventivas: [],
+      corretivas: [
+        { date: '19/05/2026', problem: 'Ruptura de vedação — parada de produção', tech: 'Carlos M.', status: 'danger', statusLabel: 'Em andamento' },
+      ],
+      historico: [
+        { date: '19/05/2026', event: 'Falha crítica detectada — produção parada' },
+        { date: '10/03/2026', event: 'Preventiva realizada' },
+      ],
+    },
+  ];
+
+  let activeEquip = 0;
+  let activeTab = 'estoque';
+
+  function badgeHTML(status, label) {
+    return `<span class="badge ${status}">${label}</span>`;
+  }
+
+  function renderWorkspace() {
+    const e = equipments[activeEquip];
+    const ws = document.getElementById('workspace');
+
+    // tab content
+    let tabContent = '';
+    if (activeTab === 'estoque') {
+      tabContent = `<div class="table-wrap"><table>
+        <thead><tr><th>Peça</th><th>Fabricante</th><th>Quantidade</th><th>Status</th></tr></thead>
+        <tbody>
+          ${e.stock.map(s => `<tr>
+            <td>${s.part}</td><td>${s.maker}</td><td>${s.qty}</td>
+            <td>${badgeHTML(s.status, s.statusLabel)}</td>
+          </tr>`).join('')}
+        </tbody></table></div>`;
+    } else if (activeTab === 'preventivas') {
+      tabContent = e.preventivas.length
+        ? `<div class="table-wrap"><table>
+          <thead><tr><th>Data</th><th>Tipo</th><th>Técnico</th><th>Status</th></tr></thead>
+          <tbody>
+            ${e.preventivas.map(p => `<tr>
+              <td>${p.date}</td><td>${p.type}</td><td>${p.tech}</td>
+              <td>${badgeHTML(p.status, p.statusLabel)}</td>
+            </tr>`).join('')}
+          </tbody></table></div>`
+        : `<div class="table-wrap" style="padding:32px;text-align:center;color:var(--text-muted);font-family:var(--font-mono);font-size:12px;">Nenhuma preventiva registrada.</div>`;
+    } else if (activeTab === 'corretivas') {
+      tabContent = e.corretivas.length
+        ? `<div class="table-wrap"><table>
+          <thead><tr><th>Data</th><th>Problema</th><th>Técnico</th><th>Status</th></tr></thead>
+          <tbody>
+            ${e.corretivas.map(c => `<tr>
+              <td>${c.date}</td><td>${c.problem}</td><td>${c.tech}</td>
+              <td>${badgeHTML(c.status, c.statusLabel)}</td>
+            </tr>`).join('')}
+          </tbody></table></div>`
+        : `<div class="table-wrap" style="padding:32px;text-align:center;color:var(--text-muted);font-family:var(--font-mono);font-size:12px;">Nenhuma corretiva registrada.</div>`;
+    } else {
+      tabContent = `<div class="table-wrap"><table>
+        <thead><tr><th>Data</th><th>Evento</th></tr></thead>
+        <tbody>
+          ${e.historico.map(h => `<tr><td>${h.date}</td><td>${h.event}</td></tr>`).join('')}
+        </tbody></table></div>`;
+    }
+
+    ws.innerHTML = `
+      <div class="equipment-header">
+        <div>
+          <h2>${e.name}</h2>
+          <div class="meta-line">
+            <span>${e.brand}</span>
+            <span>${e.model}</span>
+            ${badgeHTML(e.status, e.statusLabel)}
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-ghost">Editar</button>
+          <button class="btn btn-primary">+ Nova preventiva</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Especificações técnicas</h3>
+          <p>${e.specs.join('<br>')}</p>
+        </div>
+        <div class="card">
+          <h3>Status operacional</h3>
+          <div class="status-list">
+            <div class="status-row"><span>Última manutenção</span><strong>${e.lastMaint}</strong></div>
+            <div class="status-row"><span>Próxima preventiva</span><strong>${e.nextMaint}</strong></div>
+            <div class="status-row"><span>Criticidade</span><strong>${e.criticality}</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab ${activeTab==='estoque'?'active':''}" data-tab="estoque">Estoque</button>
+        <button class="tab ${activeTab==='preventivas'?'active':''}" data-tab="preventivas">Preventivas</button>
+        <button class="tab ${activeTab==='corretivas'?'active':''}" data-tab="corretivas">Corretivas</button>
+        <button class="tab ${activeTab==='historico'?'active':''}" data-tab="historico">Histórico</button>
+      </div>
+
+      ${tabContent}
+    `;
+
+    // tab clicks
+    ws.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeTab = btn.dataset.tab;
+        renderWorkspace();
+      });
+    });
+  }
+
+  // equipment list clicks
+  document.getElementById('equipmentList').addEventListener('click', e => {
+    const item = e.target.closest('.equipment-item');
+    if (!item) return;
+    document.querySelectorAll('.equipment-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    activeEquip = parseInt(item.dataset.id);
+    activeTab = 'estoque';
+    renderWorkspace();
+  });
+
+  // category clicks
+  document.getElementById('categoryBtns').addEventListener('click', e => {
+    const btn = e.target.closest('.category-btn');
+    if (!btn) return;
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+
+  // search filter
+  document.getElementById('searchInput').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('.equipment-item').forEach(item => {
+      const name = item.querySelector('strong').textContent.toLowerCase();
+      item.style.display = name.includes(q) ? '' : 'none';
+    });
+  });
+
+  // init
+  renderWorkspace();
+</script>
+</body>
+</html>
