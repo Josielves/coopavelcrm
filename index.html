@@ -3,32 +3,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CRM de Equipamentos Industriais</title>
+    <title>CRM · Coopavel</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+
+    <!-- ══ LOGIN ══════════════════════════════════════════ -->
     <section class="login-screen" id="loginScreen">
       <form class="login-card" id="loginForm">
-        <img class="brand-logo login-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Logotipo_da_Coopavel.svg/1280px-Logotipo_da_Coopavel.svg.png" alt="Coopavel" />
-        <p class="eyebrow">Acesso restrito</p>
-        <h1>CRM de equipamentos</h1>
+        <img class="brand-logo login-logo" src="assets/logo-coopavel.png" alt="Coopavel" />
+        <div>
+          <p class="eyebrow">Acesso restrito</p>
+          <h1>CRM de equipamentos</h1>
+        </div>
         <label>
           Usuário
-          <input name="username" required autocomplete="username" placeholder="" />
+          <input name="username" required autocomplete="username" placeholder="admin" />
         </label>
         <label>
           Senha
-          <input name="password" required type="password" autocomplete="current-password" placeholder="" />
+          <input name="password" required type="password" autocomplete="current-password" placeholder="••••••••" />
         </label>
         <p class="form-error" id="loginError"></p>
         <button class="primary" type="submit">Entrar</button>
+        <p class="hint">Primeiro acesso: admin / admin123</p>
       </form>
     </section>
 
+    <!-- ══ APP ════════════════════════════════════════════ -->
     <section class="crm-app hidden" id="crmApp">
+
+      <!-- Top bar -->
       <header class="topbar">
         <div class="brand-lockup">
-          <img class="brand-logo topbar-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Logotipo_da_Coopavel.svg/1280px-Logotipo_da_Coopavel.svg.png" alt="Coopavel" />
+          <img class="brand-logo topbar-logo" src="assets/logo-coopavel.png" alt="Coopavel" />
           <div>
             <p class="eyebrow">Administração industrial</p>
             <h1>CRM de equipamentos</h1>
@@ -36,28 +44,59 @@
         </div>
         <div class="topbar-actions">
           <span class="user-pill" id="currentUserLabel"></span>
-          <button class="ghost" id="logoutBtn" type="button">Sair</button>
-          <button class="ghost" id="exportBtn" type="button">Exportar JSON</button>
-          <label class="ghost import-btn" for="importInput">Importar JSON</label>
+          <button class="ghost" id="exportBtn" type="button">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 10v3a1 1 0 01-1 1H3a1 1 0 01-1-1v-3"/><path d="M8 10V2"/><path d="M5 5l3-3 3 3"/>
+            </svg>
+            Exportar
+          </button>
+          <label class="ghost import-btn" for="importInput">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 10v3a1 1 0 01-1 1H3a1 1 0 01-1-1v-3"/><path d="M8 2v8"/><path d="M5 7l3 3 3-3"/>
+            </svg>
+            Importar
+          </label>
           <input id="importInput" type="file" accept="application/json" />
-          <button class="primary" id="newEquipmentBtn" type="button" data-permission="write">Novo equipamento</button>
+          <button class="ghost" id="logoutBtn" type="button">Sair</button>
+          <button class="primary" id="newEquipmentBtn" type="button" data-permission="write">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M8 2v12M2 8h12"/>
+            </svg>
+            Novo equipamento
+          </button>
         </div>
       </header>
 
       <main class="app-shell">
+
+        <!-- Sidebar -->
         <aside class="sidebar" aria-label="Menu do CRM">
           <nav class="main-nav">
-            <button class="nav-btn active" type="button" data-view="equipments">Equipamentos</button>
-            <button class="nav-btn" type="button" data-view="products">Produtos</button>
-            <button class="nav-btn" type="button" data-view="stock">Estoque</button>
-            <button class="nav-btn" type="button" data-view="preventives">Preventivas</button>
-            <button class="nav-btn" type="button" data-view="correctives">Corretivas</button>
-            <button class="nav-btn" type="button" data-view="users" data-permission="manageUsers">Usuários</button>
+            <button class="nav-btn active" type="button" data-view="equipments">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M5 7h6M5 9.5h4"/></svg>
+              Equipamentos
+            </button>
+            <button class="nav-btn" type="button" data-view="products">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1l7 4v6l-7 4-7-4V5z"/><path d="M8 1v14M1 5l7 4 7-4"/></svg>
+              Produtos
+            </button>
+            <button class="nav-btn" type="button" data-view="stock">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="4" height="6" rx="1"/><rect x="6" y="4" width="4" height="10" rx="1"/><rect x="10" y="1" width="4" height="13" rx="1"/></svg>
+              Estoque
+            </button>
+            <button class="nav-btn" type="button" data-view="preventives">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="13" rx="1.5"/><path d="M5 2V1M11 2V1M2 6h12"/><path d="M5.5 9.5l1.5 1.5 3-3"/></svg>
+              Preventivas
+            </button>
+            <button class="nav-btn" type="button" data-view="users" data-permission="manageUsers">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5" r="2.5"/><path d="M1 13.5c0-2.8 2.2-5 5-5s5 2.2 5 5"/><circle cx="12" cy="5" r="2"/><path d="M10.5 10.5c.5-.2 1-.3 1.5-.3 1.9 0 3.5 1.6 3.5 3.5"/></svg>
+              Usuários
+            </button>
           </nav>
 
           <div class="search-box">
             <label for="searchInput">Buscar equipamentos</label>
-            <input id="searchInput" type="search" placeholder="Nome, fabricante, modelo..." />
+            <input id="searchInput" type="search" placeholder="Nome, fabricante, modelo…" />
           </div>
 
           <div class="sidebar-title">
@@ -68,12 +107,17 @@
           <div class="equipment-list" id="equipmentList"></div>
         </aside>
 
+        <!-- Main workspace -->
         <section class="workspace" aria-live="polite">
           <div id="viewRoot"></div>
         </section>
+
       </main>
     </section>
 
+    <!-- ══ MODALS ══════════════════════════════════════════ -->
+
+    <!-- Equipment -->
     <dialog id="equipmentDialog" class="modal">
       <form method="dialog" class="modal-card" id="equipmentForm">
         <div class="modal-header">
@@ -83,7 +127,6 @@
           </div>
           <button class="icon-btn" data-close-modal="equipmentDialog" type="button" aria-label="Fechar">×</button>
         </div>
-
         <div class="form-grid">
           <label>
             Nome da máquina
@@ -103,14 +146,9 @@
           </label>
           <label class="full">
             Especificações
-            <textarea name="specs" rows="5" placeholder="Capacidade, tensão, pressão, potência, dimensões..."></textarea>
-          </label>
-          <label class="full">
-            Pontos críticos
-            <textarea name="criticalPoints" rows="4" placeholder="Pontos de atenção, riscos, gargalos, itens críticos de segurança e manutenção..."></textarea>
+            <textarea name="specs" rows="5" placeholder="Capacidade, tensão, pressão, potência, dimensões…"></textarea>
           </label>
         </div>
-
         <div class="modal-actions">
           <button class="ghost" data-close-modal="equipmentDialog" type="button">Cancelar</button>
           <button class="primary" id="saveEquipmentBtn" type="submit">Salvar equipamento</button>
@@ -118,6 +156,7 @@
       </form>
     </dialog>
 
+    <!-- Product/Component -->
     <dialog id="componentDialog" class="modal">
       <form method="dialog" class="modal-card" id="componentForm">
         <div class="modal-header">
@@ -127,7 +166,6 @@
           </div>
           <button class="icon-btn" data-close-modal="componentDialog" type="button" aria-label="Fechar">×</button>
         </div>
-
         <div class="form-grid">
           <label>
             Nome do produto
@@ -147,10 +185,9 @@
           </label>
           <label class="full">
             Especificações
-            <textarea name="specs" rows="5" placeholder="Pressão, vazão, tensão, material, código interno..."></textarea>
+            <textarea name="specs" rows="5" placeholder="Pressão, vazão, tensão, material, código interno…"></textarea>
           </label>
         </div>
-
         <div class="modal-actions">
           <button class="ghost" data-close-modal="componentDialog" type="button">Cancelar</button>
           <button class="primary" id="saveComponentBtn" type="submit">Salvar produto</button>
@@ -158,6 +195,7 @@
       </form>
     </dialog>
 
+    <!-- Stock -->
     <dialog id="stockDialog" class="modal">
       <form method="dialog" class="modal-card" id="stockForm">
         <div class="modal-header">
@@ -167,7 +205,6 @@
           </div>
           <button class="icon-btn" data-close-modal="stockDialog" type="button" aria-label="Fechar">×</button>
         </div>
-
         <div class="form-grid">
           <label>
             Equipamento vinculado
@@ -176,15 +213,6 @@
           <label>
             Produto/periférico vinculado
             <select name="componentId"></select>
-          </label>
-          <label>
-            Categoria da peça
-            <select name="category" required>
-              <option value="mecanica">Mecânica</option>
-              <option value="hidraulica">Hidráulica</option>
-              <option value="eletrica">Elétrica</option>
-              <option value="pneumatica">Pneumática</option>
-            </select>
           </label>
           <label>
             Nome da peça
@@ -216,10 +244,9 @@
           </label>
           <label class="full">
             Especificações
-            <textarea name="specs" rows="4" placeholder="Medidas, material, aplicação, observações de compra..."></textarea>
+            <textarea name="specs" rows="4" placeholder="Medidas, material, aplicação, observações de compra…"></textarea>
           </label>
         </div>
-
         <div class="modal-actions">
           <button class="ghost" data-close-modal="stockDialog" type="button">Cancelar</button>
           <button class="primary" type="submit">Salvar peça</button>
@@ -227,6 +254,7 @@
       </form>
     </dialog>
 
+    <!-- Preventive -->
     <dialog id="preventiveDialog" class="modal">
       <form method="dialog" class="modal-card" id="preventiveForm">
         <div class="modal-header">
@@ -236,7 +264,6 @@
           </div>
           <button class="icon-btn" data-close-modal="preventiveDialog" type="button" aria-label="Fechar">×</button>
         </div>
-
         <div class="form-grid">
           <label>
             Equipamento
@@ -275,17 +302,9 @@
           </label>
           <label class="full">
             Atividades
-            <textarea name="notes" rows="5" placeholder="Checklist, lubrificação, medições, peças necessárias..."></textarea>
+            <textarea name="notes" rows="5" placeholder="Checklist, lubrificação, medições, peças necessárias…"></textarea>
           </label>
-          <div class="full material-editor">
-            <div class="material-editor-header">
-              <strong>Materiais previstos do estoque</strong>
-              <button class="ghost small" type="button" data-action="add-preventive-material">Adicionar material</button>
-            </div>
-            <div class="material-rows" id="preventiveMaterials"></div>
-          </div>
         </div>
-
         <div class="modal-actions">
           <button class="ghost" data-close-modal="preventiveDialog" type="button">Cancelar</button>
           <button class="primary" type="submit">Salvar preventiva</button>
@@ -293,65 +312,7 @@
       </form>
     </dialog>
 
-    <dialog id="correctiveDialog" class="modal">
-      <form method="dialog" class="modal-card" id="correctiveForm">
-        <div class="modal-header">
-          <div>
-            <p class="eyebrow">Corretiva</p>
-            <h2 id="correctiveDialogTitle">Nova corretiva</h2>
-          </div>
-          <button class="icon-btn" data-close-modal="correctiveDialog" type="button" aria-label="Fechar">×</button>
-        </div>
-
-        <div class="form-grid">
-          <label>
-            Equipamento
-            <select name="equipmentId" required></select>
-          </label>
-          <label>
-            Responsável
-            <select name="responsibleUserId" required></select>
-          </label>
-          <label>
-            Título
-            <input name="title" required placeholder="Ex.: Correção de vazamento hidráulico" />
-          </label>
-          <label>
-            Data de abertura
-            <input name="openedAt" required type="datetime-local" />
-          </label>
-          <label>
-            Status
-            <select name="status" required>
-              <option value="Aberta">Aberta</option>
-              <option value="Em andamento">Em andamento</option>
-              <option value="Concluída">Concluída</option>
-            </select>
-          </label>
-          <label>
-            Ponto crítico relacionado
-            <input name="criticalPoint" placeholder="Ex.: Cilindro principal, painel elétrico, linha pneumática..." />
-          </label>
-          <label class="full">
-            Descrição da falha e serviço
-            <textarea name="notes" rows="5" placeholder="Sintoma, causa provável, ação executada, recomendações..."></textarea>
-          </label>
-          <div class="full material-editor">
-            <div class="material-editor-header">
-              <strong>Materiais usados do estoque</strong>
-              <button class="ghost small" type="button" data-action="add-corrective-material">Adicionar material</button>
-            </div>
-            <div class="material-rows" id="correctiveMaterials"></div>
-          </div>
-        </div>
-
-        <div class="modal-actions">
-          <button class="ghost" data-close-modal="correctiveDialog" type="button">Cancelar</button>
-          <button class="primary" type="submit">Salvar corretiva</button>
-        </div>
-      </form>
-    </dialog>
-
+    <!-- Users -->
     <dialog id="userDialog" class="modal">
       <form method="dialog" class="modal-card" id="userForm">
         <div class="modal-header">
@@ -361,10 +322,9 @@
           </div>
           <button class="icon-btn" data-close-modal="userDialog" type="button" aria-label="Fechar">×</button>
         </div>
-
         <div class="form-grid">
           <label>
-            Nome
+            Nome completo
             <input name="name" required placeholder="Ex.: João da Manutenção" />
           </label>
           <label>
@@ -384,7 +344,6 @@
             </select>
           </label>
         </div>
-
         <div class="modal-actions">
           <button class="ghost" data-close-modal="userDialog" type="button">Cancelar</button>
           <button class="primary" type="submit">Salvar usuário</button>
